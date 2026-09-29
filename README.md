@@ -1,9 +1,7 @@
 ````markdown
 # Agentic Content Orchestrator
 
-A research-aware technical blog generation system built with **LangGraph, Groq, Tavily, Pydantic, Streamlit, and LangSmith**.
-
-The system dynamically decides whether web research is required, creates a structured writing plan, generates sections through parallel LangGraph workers, and assembles the final Markdown article.
+A **LangGraph-based agentic workflow** for research-aware technical content generation, featuring conditional routing, structured planning, parallel execution, evidence grounding, and LangSmith observability.
 
 ## Architecture
 
@@ -46,14 +44,14 @@ User Topic
 
 ## Features
 
-* **Adaptive research routing** — determines whether a topic requires web research.
+* **Conditional research routing** — determines whether external research is required for a topic.
 * **Structured planning** — generates a typed five-section writing plan using Pydantic.
-* **Parallel generation** — uses LangGraph fan-out workers to generate sections independently.
-* **Evidence grounding** — passes retrieved research to workers for factual grounding and citations.
-* **Deterministic assembly** — restores section order before producing the final article.
-* **Structured LLM outputs** — uses Pydantic schemas for predictable model responses.
-* **Observability** — LangSmith provides traces for workflow and LLM execution.
-* **Streamlit UI** — generates and downloads the final blog as Markdown.
+* **Parallel generation** — uses LangGraph fan-out to generate sections independently.
+* **Evidence grounding** — passes retrieved research evidence to workers for factual grounding and citations.
+* **Deterministic assembly** — restores section order and combines generated sections into the final document.
+* **Structured LLM outputs** — uses Pydantic schemas to validate model responses.
+* **Workflow observability** — uses LangSmith to trace and debug the end-to-end workflow.
+* **Streamlit interface** — provides an interface for generating and downloading Markdown blogs.
 
 ## Workflow
 
@@ -62,6 +60,21 @@ User Topic
 3. **Orchestrator** creates a structured five-section writing plan.
 4. **Workers** generate individual sections through LangGraph fan-out.
 5. **Reducer** restores section order and produces the final Markdown document.
+
+## Observability
+
+The workflow is integrated with **LangSmith** for end-to-end tracing and debugging.
+
+LangSmith provides visibility into:
+
+* Router decisions
+* Research and tool execution
+* Structured planning
+* Individual worker executions
+* LLM inputs and outputs
+* Overall LangGraph workflow execution
+
+This allows individual stages of the workflow to be inspected instead of treating the LLM pipeline as a black box.
 
 ## Tech Stack
 
@@ -86,6 +99,18 @@ User Topic
 
 ![LangSmith Workflow Trace](screenshots/langsmith.png)
 
+## Engineering Highlights
+
+* Conditional workflow routing with LangGraph
+* Typed state management using `TypedDict`
+* Structured LLM outputs validated with Pydantic
+* Parallel section generation using LangGraph fan-out
+* Research evidence normalization and deduplication
+* URL-based evidence grounding
+* Deterministic aggregation and section ordering using reducers
+* End-to-end workflow observability with LangSmith
+* Secure API configuration using environment variables
+
 ## Project Structure
 
 ```text
@@ -96,7 +121,6 @@ agentic-content-orchestrator/
 │   ├── frontend.png
 │   └── langsmith.png
 ├── .gitignore
-├── requirements.txt
 └── README.md
 ```
 
@@ -144,22 +168,13 @@ LANGCHAIN_PROJECT=blog_generator
 streamlit run frontend.py
 ```
 
-## Engineering Highlights
-
-* Conditional routing with LangGraph
-* Fan-out / parallel worker execution
-* Typed state management with `TypedDict`
-* Structured model outputs with Pydantic
-* Research evidence normalization and deduplication
-* Deterministic section ordering using reducers
-* LangSmith tracing for workflow observability
-
 ## Future Improvements
 
 * Section-level streaming in the UI
 * Stronger source-quality and citation validation
 * Persistent generation history
 * Retry and failure handling for individual workers
+* Automated evaluation of generated content
 
 ```
 ```
